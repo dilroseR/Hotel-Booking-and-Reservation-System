@@ -17,6 +17,29 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css" href="static/css/styles.css">
 
+    <style>
+        .btn-outline-secondary {
+            color: aqua;
+            border-color: #6c757d;
+        }
+
+        p {
+
+        }
+
+        .paraClass {
+            font-size: 3em;
+        }
+
+        .secondClass {
+            color: red;
+        }
+
+        #lastPara {
+            text-decoration: underline;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -61,10 +84,6 @@
     {{end}}
 
 
-    {{block "js" .}}
-
-    {{end}}
-
     <footer class="my-footer">
         <div class="row">
             <div class="col">
@@ -91,6 +110,11 @@
     <script src="https://unpkg.com/notie"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
     
+    
+    {{block "js" .}}
+
+    {{end}}
+
     <script>
         let attention = Prompt();
     
@@ -111,43 +135,15 @@
                 });
             }, false);
         })();
-    
-        document.getElementById("colorButton").addEventListener("click", function () {
-            let html = `
-            <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
-                <div class="form-row">
-                    <div class="col">
-                        <div class="form-row" id="reservation-dates-modal">
-                            <div class="col">
-                                <input disabled required class="form-control" type="text" name="start" id="start" placeholder="Arrival">
-                            </div>
-                            <div class="col">
-                                <input disabled required class="form-control" type="text" name="end" id="end" placeholder="Departure">
-                            </div>
-    
-                        </div>
-                    </div>
-                </div>
-            </form>
-            `;
-            attention.custom({
-                title: 'Choose your dates',
-                msg: html,
-            });
-        })
-    
-        const elem = document.getElementById('reservation-dates');
-        const rangePicker = new DateRangePicker(elem, {
-            format: "yyyy-mm-dd",
-        });
-    
-        function notify(msg, msgType) {
+
+
+     function notify(msg, msgType) {
             notie.alert({
                 type: msgType,
                 text: msg,
             })
         }
-    
+
         function notifyModal(title, text, icon, confirmationButtonText) {
             Swal.fire({
                 title: title,
@@ -156,6 +152,18 @@
                 confirmButtonText: confirmationButtonText
             })
         }
+
+        {{with .Error}}
+            notify("{{.}}", "error");
+        {{end}}
+
+        {{with .Flash}}
+        notify("{{.}}", "success");
+        {{end}}
+
+        {{with .Warning}}
+        notify("{{.}}", "warning");
+        {{end}}
     
         function Prompt() {
             let toast = function (c) {
@@ -246,11 +254,21 @@
                     }
                 })
     
-                if (formValues) {
-                    Swal.fire(JSON.stringify(formValues))
+                if (result) {
+                    if (result.dismiss !== Swal.DismissReason.cancel) {
+                        if (result.value !== "") {
+                            if (c.callback !== undefined) {
+                                c.callback(result);
+                            }
+                        } else {
+                            c.callback(false);
+                        }
+                    } else {
+                        c.callback(false);
+                    }
                 }
             }
-    
+
             return {
                 toast: toast,
                 success: success,

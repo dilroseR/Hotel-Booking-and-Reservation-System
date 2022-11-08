@@ -1,15 +1,17 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/ChuwenSun/bookings/pkg/config"
-	"github.com/ChuwenSun/bookings/pkg/handlers"
-	"github.com/ChuwenSun/bookings/pkg/render"
 	"github.com/alexedwards/scs/v2"
+	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/config"
+	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/handlers"
+	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/models"
+	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/render"
 )
 
 const portNumber = ":8080"
@@ -19,6 +21,8 @@ var session *scs.SessionManager
 
 // main is the main function
 func main() {
+
+	gob.Register(models.Reservation{})
 
 	//change this to true when in production
 	app.InProduction = false
@@ -51,5 +55,7 @@ func main() {
 	}
 
 	err = srv.ListenAndServe()
-	log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
