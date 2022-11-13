@@ -3,14 +3,16 @@ package render
 import (
 	"bytes"
 	"fmt"
+
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/pkg/config"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/pkg/models"
 	"github.com/justinas/nosurf"
+
+	"hotelManagement/internal/config"
+	"hotelManagement/internal/models"
 )
 
 var functions = template.FuncMap{}
@@ -22,6 +24,7 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultData adds data for all templates
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Warning = app.Session.PopString(r.Context(), "warning")

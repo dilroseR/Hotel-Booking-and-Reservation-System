@@ -1,10 +1,9 @@
 package main
 
 import (
+	"hotelManagement/internal/config"
+	"hotelManagement/internal/handlers"
 	"net/http"
-
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/pkg/config"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/pkg/handlers"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -22,7 +21,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 	mux.Get("/generals-quarters", handlers.Repo.Generals)
-	mux.Get("/majors-suites", handlers.Repo.Majors)
+	mux.Get("/majors-suite", handlers.Repo.Majors)
 
 	mux.Get("/search-availability", handlers.Repo.Availability)
 	mux.Post("/search-availability", handlers.Repo.PostAvailability)

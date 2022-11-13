@@ -5,26 +5,26 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
+
+	"hotelManagement/internal/config"
+	"hotelManagement/internal/handlers"
+	"hotelManagement/internal/models"
+	"hotelManagement/internal/render"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/config"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/handlers"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/models"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/render"
+
+	"time"
 )
 
-const portNumber = ":8080"
+const portNumber = ":1234"
 
 var app config.AppConfig
 var session *scs.SessionManager
 
-// main is the main function
 func main() {
-
 	gob.Register(models.Reservation{})
 
-	//change this to true when in production
+	// change this to true when in production
 	app.InProduction = false
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour

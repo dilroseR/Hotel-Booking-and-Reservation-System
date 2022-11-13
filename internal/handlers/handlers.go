@@ -3,13 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+
 	"log"
 	"net/http"
 
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/config"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/forms"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/models"
-	"github.com/dilroseR/Hotel-Booking-and-Reservation-System/tree/ChuwenSun/bookings/internal/render"
+	"hotelManagement/internal/config"
+	"hotelManagement/internal/forms"
+	"hotelManagement/internal/models"
+	"hotelManagement/internal/render"
 )
 
 // Repo the repository used by the handlers
@@ -37,7 +38,7 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
 
-	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
+	render.RenderTemplate(w, r, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the handler for the about page
