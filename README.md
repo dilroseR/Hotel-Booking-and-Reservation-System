@@ -1,6 +1,8 @@
-# Bookings and Reservations
+# Hotel_Booking_and_Reservation-System
 
-The repository for [Building Modern Web Applications with Go](https://www.udemy.com/course/building-modern-web-applications-with-go/?referralCode=0415FB906223F10C6800).
+Reference:
+
+(https://www.udemy.com/course/building-modern-web-applications-with-go/?referralCode=0415FB906223F10C6800).
 
 
 - Built in Go version 1.15
