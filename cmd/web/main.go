@@ -33,6 +33,12 @@ func main() {
 	}
 	defer db.SQL.Close()
 
+	defer close(app.MailChan)
+
+	fmt.Println("Starting mail listener...")
+
+	listenForMail()
+
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
 	srv := &http.Server{
@@ -48,10 +54,12 @@ func main() {
 
 func run() (*driver.DB, error) {
 	gob.Register(models.Reservation{})
-	gob.Register(models.User {})
+	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
-	 
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 	// change this to true when in production
 	app.InProduction = false
 
@@ -72,13 +80,13 @@ func run() (*driver.DB, error) {
 	// connect to database
 	log.Println("Connecting to database...")
 	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=rose password=")
-	if err!=nil{
+	if err != nil {
 		log.Fatal("Cannot connect to database...")
 	}
 	log.Println("Connected to database")
 
 	tc, err := render.CreateTemplateCache()
-	if err!=nil{
+	if err != nil {
 		log.Fatal("cannot create template cache ")
 		return nil, err
 	}
@@ -89,7 +97,7 @@ func run() (*driver.DB, error) {
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 
-	render.NewRenderer (&app)
+	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
 
 	return db, nil
