@@ -12,7 +12,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
 	"github.com/alexedwards/scs/v2"
 
 	"time"
