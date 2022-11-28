@@ -11,9 +11,6 @@ import (
 	"time"
 
 	"hotelManagement/internal/config"
-	"hotelManagement/internal/driver"
-
-	//"hotelManagement/internal/driver"
 	"hotelManagement/internal/models"
 	"hotelManagement/internal/render"
 
@@ -50,18 +47,6 @@ func getRoutes() http.Handler {
 
 	app.Session = session
 
-	mailChan := make(chan models.MailData)
-	app.MailChan = mailChan
-	defer close(mailChan)
-
-	//listenForMail()
-	// connect to database
-	//log.Println("Connecting to database...")
-	//db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=rose password=")
-	//if err!=nil{
-	//	log.Fatal("Cannot connect to database...")
-	//}
-
 	tc, err := CreateTestTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
@@ -70,10 +55,10 @@ func getRoutes() http.Handler {
 	app.TemplateCache = tc
 	app.UseCache = true
 
-	repo := NewRepo(&app, &driver.DB{})
+	repo := NewRepo(&app)
 	NewHandlers(repo)
 
-	render.NewRenderer(&app)
+	render.NewTemplates(&app)
 
 	mux := chi.NewRouter()
 

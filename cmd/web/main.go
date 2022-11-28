@@ -4,7 +4,6 @@ import (
 	"encoding/gob"
 	"fmt"
 	"hotelManagement/internal/config"
-	"hotelManagement/internal/driver"
 	"hotelManagement/internal/handlers"
 	"hotelManagement/internal/helpers"
 	"hotelManagement/internal/models"
@@ -18,7 +17,7 @@ import (
 	"time"
 )
 
-const portNumber = ":8080"
+const portNumber = ":1234"
 
 var app config.AppConfig
 var session *scs.SessionManager
@@ -27,17 +26,10 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
-	db, err := run()
+	err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.SQL.Close()
-
-	defer close(app.MailChan)
-
-	fmt.Println("Starting mail listener...")
-
-	listenForMail()
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
@@ -52,14 +44,9 @@ func main() {
 	}
 }
 
-func run() (*driver.DB, error) {
+func run() error {
 	gob.Register(models.Reservation{})
-	gob.Register(models.User{})
-	gob.Register(models.Room{})
-	gob.Register(models.Restriction{})
 
-	mailChan := make(chan models.MailData)
-	app.MailChan = mailChan
 	// change this to true when in production
 	app.InProduction = false
 
@@ -77,28 +64,20 @@ func run() (*driver.DB, error) {
 
 	app.Session = session
 
-	// connect to database
-	log.Println("Connecting to database...")
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=rose password=")
-	if err != nil {
-		log.Fatal("Cannot connect to database...")
-	}
-	log.Println("Connected to database")
-
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("cannot create template cache ")
-		return nil, err
+		log.Fatal("cannot create template cache")
+		return err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app, db)
+	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 
-	render.NewRenderer(&app)
+	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
 
-	return db, nil
+	return nil
 }
